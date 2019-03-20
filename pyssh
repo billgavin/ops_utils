@@ -1,0 +1,24 @@
+#!/usr/bin/python
+
+import os
+import getpass
+
+def ssh(server, ip, user, port=22, auth=''):
+    log_user = getpass.getuser()
+    home_dir = '/root/' if log_user == 'root' else '/home/%s/' % log_user
+    ssh_file = '%s.ssh/config' % home_dir
+    ssh_config = '''
+Host %s
+    Hostname %s
+    Port %d
+    User %s
+    ''' % (server, ip, port, user)
+    if auth:
+        ssh_config += 'IdentityFile %s\n' % os.path.abspath(auth)
+    with open(ssh_file, 'a') as f:
+        f.write(ssh_config)
+    
+
+if __name__ == '__main__':
+    import fire
+    fire.Fire(ssh)
