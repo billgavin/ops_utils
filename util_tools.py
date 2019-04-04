@@ -2,6 +2,7 @@ from logbook import Logger, StreamHandler, TimedRotatingFileHandler
 from logbook.more import ColorizedStderrHandler
 import logbook
 import socket
+import uuid
 import re
 import sys
 import fire
@@ -82,6 +83,22 @@ def get_ip_hostname(ip='8.8.8.8', port=80):
     finally:
         s.close()
     return h, ip
+
+def gen_uuid(func=1, name='python', namespace='url'):
+    namespaces = {
+        'dns': uuid.NAMESPACE_DNS,
+        'oid': uuid.NAMESPACE_OID,
+        'url': uuid.NAMESPACE_URL,
+        'x500': uuid.NAMESPACE_X500
+    }
+    name_space = namespaces.get(namespace, None)
+    assert name_space is not None, 'namespace support values: dns, oid, url & x500.'
+    assert func in [1, 3, 4, 5] , 'func support values: 1, 3, 4, 5.'
+    id1 = uuid.uuid1().hex
+    id3 = uuid.uuid3(name_space, name).hex
+    id4 = uuid.uuid4().hex
+    id5 = uuid.uuid5(name_space, name).hex
+    return eval('id%d' % func)
 
 if __name__ == '__main__':
 	fire.Fire()
