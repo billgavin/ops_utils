@@ -73,6 +73,38 @@ class switch(object):
         else:
             return False
 
+def HandleJson(object):
+
+    @classmethod
+    def __paths(cls, data, path=''):
+        if isinstance(data, dict):
+            for k, v in data.items():
+                tmp = path + "['%s']" % k
+                yield (tmp, v)
+                yield from cls.__paths(v, tmp)
+    
+    @classmethod
+    def find_key_path(cls, data, key):
+        result = []
+        for path, value in cls.__path(data):
+            if path.endswith("['%s']" % key):
+                result.append(path)
+        return result
+
+    @classmethod
+    def find_value_path(cls, data, key):
+        result = []
+        for path, value in cls.__paths(data):
+            if isinstance(value, (str, int, bool, float)):
+                if value == key:
+                    result.append(path)
+        return result
+
+    @classmethod
+    def get_key_node(cls, data, key):
+        for path, value in cls.__paths(data):
+            if path.endswith("['%s']" % key):
+                return value
 
 def get_ip_hostname(ip='8.8.8.8', port=80):
     h = socket.gethostname()
