@@ -82,6 +82,11 @@ def HandleJson(object):
                 tmp = path + "['%s']" % k
                 yield (tmp, v)
                 yield from cls.__paths(v, tmp)
+        if isinstance(data, path=''):
+            for k, v in enumerate(data):
+                tmp = path + '[%d]' % k
+                yield (tmp, v)
+                yield from cls.__paths(v, tmp)
     
     @classmethod
     def find_key_path(cls, data, key):
