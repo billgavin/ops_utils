@@ -3,7 +3,6 @@ from logbook.more import ColorizedStderrHandler
 import logbook
 import socket
 import uuid
-import re
 import sys
 import fire
 import os
@@ -45,29 +44,20 @@ def filesize(path):
 class switch(object):
 
 
-    def __init__(self, value, flag=0):
-        '''
-        re.S DOTALL
-        re.I IGNORECASE
-        re.L LOCALE
-        re.M MULTILINE
-        re.X VERBOSE
-        re.U
-        '''
+    def __init__(self, value):
         self.value = value
         self.fall = False
-        self.flag = flag
 
     def __iter__(self):
         """Return the match method once, then stop"""
         yield self.match
         raise StopIteration
 
-    def match(self, arg=''):
+    def match(self, *arg):
         """Indicate whether or not to enter a case suite"""
         if self.fall or not arg:
             return True
-        elif re.search(arg, self.value, self.flag) is not None:
+        elif self.value in args:
             self.fall = True
             return True
         else:
