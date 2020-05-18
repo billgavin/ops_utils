@@ -19,15 +19,14 @@ def logger(name='LOGBOOK', log_path='', file_log=False):
 	return Logger(name)
 
 def bytes2human(n):
-	symbols = ('K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y')
+	symbols = ('K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y', 'B', 'N', 'D')
 	prefix = {}
 	for i, s in enumerate(symbols):
 		prefix[s] = 1 << (i+1) * 10
 	for s in reversed(symbols):
 		if n >= prefix[s]:
 			value = float(n) / prefix[s]
-			return '%.2f%s' % (value, s)
-	return '%sB' % n
+			return '%.2f %sB' % (value, s)
 		
 def filesize(path):
 	assert os.path.isdir(path)
