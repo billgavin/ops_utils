@@ -1,5 +1,6 @@
 import fire
 from prettytable import PrettyTable
+from sympy import *
 
 
 class GF:
@@ -79,6 +80,24 @@ class GF:
             tb.add_row(ls)
         print(tb)
 
+class polynomial:
+
+    def __init__(self, **ecs):
+        self.poly = sorted(ecs.items(), key=lambda d:d[0], reverse=True)
+
+    def __repr__(self):
+        x = Symbol('x')
+        polys = []
+        for e, c in self.poly:
+            polys.append(latex(int(c) * x ** int(e)))
+        return '+'.join(polys)
+
+    def add(self, **a):
+        for e, c in self.poly:
+            b = a.get(e, 0)
+            c += b
+
 
 if __name__ == '__main__':
-    fire.Fire()
+    poly = polynomial(**{'0': 5, '1': 7, '2': 7, '3': 4, '4': 1})
+    print(poly)
