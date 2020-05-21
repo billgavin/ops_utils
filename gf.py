@@ -85,7 +85,7 @@ class GF:
 
 class GFPolynomial:
 
-    def __init__(self, *coeffs, gfs=3):
+    def __init__(self, *coeffs, gfs=4):
         poly = {}
         for i in range(len(coeffs)):
             monom = len(coeffs) - 1 - i
