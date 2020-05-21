@@ -127,15 +127,39 @@ class GFPolynomial:
                 res[-1-k] = self.gf.add(res[-1-k], v)
         return GFPolynomial(*res, gfs=self.gfs)
 
+    def __divmod__(self, other):
+        ms = max(self.poly)
+        mo = max(other.poly)
+        s = self.poly.get(ms)
+        o = other.poly.get(mo)
+        if ms < mo:
+            return GFPolynomial(0, gfs=self.gfs), self
+        elif ms == mo:
+            n = self.gf.div(s, o)
+            pn = GFPolynomial(n, gfs=self.gfs)
+            return pn, self + other * pn
+        else:
+            k = ms - mo
+            n = self.gf.div(s, o)
+            kn = [0] * k
+            kn.insert(0, n)
+            pkn = GFPolynomial(*kn, gfs=self.gfs)
+            self + other * pkn
+
         
 
 if __name__ == '__main__':
-    a = GFPolynomial(1, 4, 7, 7, 0)
-    b = GFPolynomial(3, 2, 0, 5)
-    c = GFPolynomial(5, 0, 0, 0, 0, 0, 1, 0)
-    print(f'a: {a}')
-    print(f'b: {b}')
-    print(f'c: {c}')
-    print(a+b+c)
-    d = a * b * c
-    print(d)
+    #a = GFPolynomial(1, 4, 7, 7, 0)
+    #b = GFPolynomial(3, 2, 0, 5)
+    #c = GFPolynomial(5, 0, 0, 0, 0, 0, 1, 0)
+    #print(f'a: {a}')
+    #print(f'b: {b}')
+    #print(f'c: {c}')
+    #print(a+b+c)
+    #d = a * b * c
+    #print(d)
+    a = GFPolynomial(4,3,2)
+    b = GFPolynomial(2,4,0,3)
+    print(a, b)
+    c, d = divmod(a, b)
+    print(c, d)
