@@ -18,6 +18,9 @@ class GF:
         self.max_no = self.total - 1
         self.primitive_polynomial = primitive_polynomial_dict[w]
 
+    def __eq__(self, other):
+        return self.total == other.total
+
     def add(self, a, b):
         #assert (a <= self.max_no) and (b <= self.max_no), f'Over the max {self.max_no}'
         return a ^ b
@@ -80,24 +83,59 @@ class GF:
             tb.add_row(ls)
         print(tb)
 
-class polynomial:
+class GFPolynomial:
 
-    def __init__(self, **ecs):
-        self.poly = sorted(ecs.items(), key=lambda d:d[0], reverse=True)
+    def __init__(self, *coeffs, gfs=3):
+        poly = {}
+        for i in range(len(coeffs)):
+            monom = len(coeffs) - 1 - i
+            poly[monom] = coeffs[i]
+        self.poly = poly
+        self.gf = GF(gfs)
+        self.gfs = gfs
+        print(f'GF(2^{gfs})')
+        #self.gf.tables()
+        #self.gf.tables(flag='x')
 
     def __repr__(self):
         x = Symbol('x')
-        polys = []
-        for e, c in self.poly:
-            polys.append(latex(int(c) * x ** int(e)))
-        return '+'.join(polys)
+        polys = 0
+        for e, c in self.poly.items():
+            polys += c * x ** e
+        return f'多项式：{apart(polys)}\nLatex: {latex(polys)}'
 
-    def add(self, **a):
-        for e, c in self.poly:
-            b = a.get(e, 0)
-            c += b
+    def __add__(self, other):
+        assert self.gfs == other.gfs, '必须在同一伽罗瓦域内计算。'
+        polys = max(max(self.poly), max(other.poly))
+        res = []
+        for i in range(polys + 1, -1, -1):
+            a = self.poly.get(i, 0)
+            b = other.poly.get(i, 0)
+            c = self.gf.add(a, b)
+            #print(i, a, b, c)
+            res.append(c)
+        return GFPolynomial(*res, gfs=self.gfs)
 
+    def __mul__(self, other):
+        assert self.gfs == other.gfs, '必须在同一伽罗瓦域内计算。'
+        n = max(self.poly) + max(other.poly)
+        res = [0] * (n+1)
+        for ka, va in self.poly.items():
+            for kb, vb in other.poly.items():
+                k = ka + kb
+                v = self.gf.mul(va, vb)
+                res[-1-k] = self.gf.add(res[-1-k], v)
+        return GFPolynomial(*res, gfs=self.gfs)
+
+        
 
 if __name__ == '__main__':
-    poly = polynomial(**{'0': 5, '1': 7, '2': 7, '3': 4, '4': 1})
-    print(poly)
+    a = GFPolynomial(1, 4, 7, 7, 0)
+    b = GFPolynomial(3, 2, 0, 5)
+    c = GFPolynomial(5, 0, 0, 0, 0, 0, 1, 0)
+    print(f'a: {a}')
+    print(f'b: {b}')
+    print(f'c: {c}')
+    print(a+b+c)
+    d = a * b * c
+    print(d)
