@@ -137,14 +137,15 @@ class GFPolynomial:
         else:
             k = ms - mo
             n = self.gf.div(s, o)
-            kn = [0] * k
-            kn.insert(0, n)
-            pkn = GFPolynomial(*kn, gfs=self.gfs) # 商
-            a = self + other * pkn # 余数
-            while max(a.poly) >= max(pkn.poly):
-                s, a = divmod(a, other)
-                pkn += s
-            return pkn, a
+            shang = [0] * k
+            shang.insert(0, n)
+            gfshang = GFPolynomial(*shang, gfs=self.gfs)
+            yu = self + gfshang * other
+            for i in range(i,k+1):
+                my = max(yu.poly)
+
+            return gfshang, yu
+
 
         
 
@@ -158,8 +159,8 @@ if __name__ == '__main__':
     #print(a+b+c)
     #d = a * b * c
     #print(d)
-    a = GFPolynomial(6,5,4,3,2,1)
-    b = GFPolynomial(2,4,0,3)
+    a = GFPolynomial(1,2,3,4,0,0,0,0)
+    b = GFPolynomial(1,4,7,7,5)
     print(a, b)
     c, d = divmod(a, b)
     print(c, d)
