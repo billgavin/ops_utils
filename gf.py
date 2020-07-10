@@ -141,8 +141,16 @@ class GFPolynomial:
             shang.insert(0, n)
             gfshang = GFPolynomial(*shang, gfs=self.gfs)
             yu = self + gfshang * other
-            for i in range(i,k+1):
+            for i in range(1,k+1):
                 my = max(yu.poly)
+                yk = my - mo
+                yn = self.gf.div(yu.poly.get(my), o)
+                ys = [0] * yk
+                ys.insert(0, yn)
+                ygfs = GFPolynomial(*ys, gfs=self.gfs)
+                yu = yu + ygfs * other
+                shang[i] = yn
+            gfshang = GFPolynomial(*shang, gfs=self.gfs)
 
             return gfshang, yu
 
