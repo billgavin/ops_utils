@@ -58,15 +58,25 @@ class NumberTheory:
     def isSixth(cls, n):
         return cls.isOdd(n) and cls.isTriple(n)
 
-    # 判断7的倍数
+    # 判断7, 11, 13的倍数
     @classmethod
     def _minus(cls, n):
-        a, b = divmod(n, 1000)
-        sub = abs(a - b)
-        while len(str(sub)) > 3:
-            cls._minus(sub)
-        return sub
+        while len(str(n)) > 3:
+            a, b = divmod(n, 1000)
+            n = abs(a - b)
+        return n
+
+    # 判断7的倍数
+    @classmethod
+    def isSeventh(cls, n):
+        if len(str(n)) > 3:
+            n = cls._minus(n)
+        return n in cls.sevens
         
+    # 判断11的倍数
+    @classmethod
+    def isEleventh(cls, n):
+
 
 if __name__ == '__main__':
     fire.Fire()
